@@ -1,0 +1,50 @@
+{
+  "7931dea3-8541-405e-b666-77ece07d4dce": {
+    "email": "admin@example.com",
+    "role": "admin",
+    "name": "Administrator",
+    "when": 1754654401602
+  },
+  "22e11960-1342-4c79-8bfb-e1be9338e77d": {
+    "email": "admin@example.com",
+    "role": "admin",
+    "name": "Administrator",
+    "when": 1754655663162
+  },
+  "962dff6a-3265-4153-ab76-5cac14f1e727": {
+    "email": "admin@example.com",
+    "role": "admin",
+    "name": "Administrator",
+    "when": 1754657374348
+  },
+  "2052454b-177a-481c-a729-68fe24f0f9ef": {
+    "email": "admin@example.com",
+    "role": "admin",
+    "name": "Administrator",
+    "when": 1754659931064
+  },
+  "dc8d5a4c-b91e-49b1-a98e-797a4ae419d0": {
+    "email": "admin@example.com",
+    "role": "admin",
+    "name": "Administrator",
+    "when": 1754660833673
+  },
+  "d61de8d4-3f8d-46f4-9437-1e01899a5b06": {
+    "email": "admin@example.com",
+    "role": "admin",
+    "name": "Administrator",
+    "when": 1754673107673
+  },
+  "b12221c9-6a14-480a-832b-291fc6e02bb2": {
+    "email": "admin@example.com",
+    "role": "admin",
+    "name": "Administrator",
+    "when": 1754673390372
+  },
+  "166f8d1b-158a-42ad-b1a9-f40850f85b73": {
+    "email": "admin@example.com",
+    "role": "admin",
+    "name": "Administrator",
+    "when": 1754676362277
+  }
+}

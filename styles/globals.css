@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* custom */
+.hero-bg {
+  background-image: url('https://images.unsplash.com/photo-1505691723518-36a0b6a44f5b');
+  background-size: cover;
+  background-position: center;
+}
+.card-shadow {
+  box-shadow: 0 10px 30px rgba(2,6,23,0.08);
+}
+.toast {
+  position: fixed;
+  right: 20px;
+  top: 20px;
+  z-index: 60;
+}

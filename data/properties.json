@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "title": "Modern 2-Bedroom Apartment — Kampala CBD",
+    "description": "Bright 2-bedroom apartment with balcony, modern kitchen and secure parking.",
+    "price": "UGX 420,000 / month",
+    "image": "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&auto=format&fit=crop"
+  },
+  {
+    "id": 2,
+    "title": "Spacious 3-Bedroom House — Kololo",
+    "description": "Elegant 3-bedroom family home in a quiet neighborhood with garden.",
+    "price": "UGX 1,200,000 / month",
+    "image": "https://images.unsplash.com/photo-1599423300746-b62533397364?w=800&auto=format&fit=crop"
+  },
+  {
+    "id": 3,
+    "title": "Cozy Studio — Ntinda",
+    "description": "Affordable studio apartment ideal for young professionals and students.",
+    "price": "UGX 250,000 / month",
+    "image": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop"
+  },
+  {
+    "id": 4,
+    "title": "Luxury Villa with Pool — Entebbe beach",
+    "description": "Stunning villa with private pool, terrace, and lake view.",
+    "price": "UGX 5,000,000 / month",
+    "image": "https://images.unsplash.com/photo-1604908177224-4d3c8d7b9c0b?w=800&auto=format&fit=crop"
+  },
+  {
+    "id": 5,
+    "title": "Family Home — Naguru",
+    "description": "Comfortable 4-bedroom family house near schools and shopping centers.",
+    "price": "UGX 900,000 / month",
+    "image": "https://images.unsplash.com/photo-1572120360610-d971b9c8f1e9?w=800&auto=format&fit=crop"
+  },
+  {
+    "id": 6,
+    "title": "Luxury Modern Villa for couples",
+    "description": "Very spacious modern villa with premium finishes and amenities.",
+    "price": "UGX 2,330,000 / month",
+    "image": "https://images.unsplash.com/photo-1600585154340-9a7c2d2d6a0f?w=800&auto=format&fit=crop"
+  },
+  {
+    "id": 7,
+    "title": "Villa ",
+    "description": "mgcjgcjv,vluflhvlh",
+    "price": "200000000",
+    "image": "/uploads/77b1715c63a3e30ade9a176fafae45a1"
+  },
+  {
+    "id": 8,
+    "title": "Cassabella",
+    "description": "Spacious laxaarious hotel room",
+    "price": "9000000",
+    "image": "/uploads/3f6b35758820c64ddaf9e53f44c22909"
+  }
+]
