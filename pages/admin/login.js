@@ -34,9 +34,10 @@ export default function Login(){
             <input type="password" className="mt-1 block w-full border rounded p-2" value={pass} onChange={e=>setPass(e.target.value)} required />
           </div>
           {err && <div className="text-red-600 text-sm">{err}</div>}
-          <div className="flex items-center justify-between">
-            <button className="bg-blue-600 text-white px-4 py-2 rounded">Login</button>
-            <div className="text-sm text-gray-500">Demo: admin@example.com / password123</div>
+          <div className="flex justify-end">
+            <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition-colors">
+              Login
+            </button>
           </div>
         </form>
       </div>

@@ -10,5 +10,11 @@
     "password": "$2b$10$YFseAzbZC4Bd.bZxgWLQ3eNAZz8wOqbxXyMUXwUcbLExnG9u2YkDC",
     "role": "demo",
     "name": "Demo User"
+  },
+  {
+    "email": "elizabethmirembe556@gmail.com",
+    "password": "$2b$10$eMxAfHkvpmG4HI3uTU2Tf.bpFdrD2VmTmoFNzJSNGNVI84CeLbrn6",
+    "name": "Elizabeth Mirembe",
+    "role": "admin"
   }
 ]
