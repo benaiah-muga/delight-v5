@@ -31,8 +31,9 @@
     "id": 5,
     "title": "Family Home — Naguru",
     "description": "Comfortable 4-bedroom family house near schools and shopping centers.",
-    "price": "UGX 900,000 / month",
-    "image": "https://images.unsplash.com/photo-1572120360610-d971b9c8f1e9?w=800&auto=format&fit=crop"
+    "price": "UGX 9,000,000 / month",
+    "image": "https://images.unsplash.com/photo-1572120360610-d971b9c8f1e9?w=800&auto=format&fit=crop",
+    "updatedAt": "2025-08-08T19:04:05.193Z"
   },
   {
     "id": 6,
@@ -53,6 +54,16 @@
     "title": "Cassabella",
     "description": "Spacious laxaarious hotel room",
     "price": "9000000",
-    "image": "/uploads/3f6b35758820c64ddaf9e53f44c22909"
+    "image": "https://n5bip4ilemcg3rdk.public.blob.vercel-storage.com/room1-fYL1WBduxkdi5ITD0h1qZ0DQll5jbh.jpeg",
+    "updatedAt": "2025-08-08T20:33:50.296Z"
+  },
+  {
+    "id": 9,
+    "title": "gbdhd",
+    "description": "xfdcgngnfgfgmgm",
+    "price": "340000",
+    "image": "https://n5bip4ilemcg3rdk.public.blob.vercel-storage.com/a_nice_human_realistic_image_of_a%20%283%29-UIiTPNTQddmDiQ2rJZErwvKacApx9C.jpeg",
+    "createdAt": "2025-08-08T20:37:33.629Z",
+    "updatedAt": "2025-08-08T20:37:33.629Z"
   }
 ]

@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 
 export default function Dashboard(){
-  const [propsList,setPropsList] = useState([])
-  const [loading,setLoading] = useState(true)
-  const [showForm,setShowForm] = useState(false)
-  const [form, setForm] = useState({id:null,title:'',description:'',price:'',imageUrl:'',imageFile:null})
-  const [userRole,setUserRole] = useState(null)
+  const [propsList, setPropsList] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [showForm, setShowForm] = useState(false)
+  const [form, setForm] = useState({id: null, title: '', description: '', price: '', imageUrl: '', imageFile: null})
+  const [userRole, setUserRole] = useState(null)
+  const [uploading, setUploading] = useState(false)
 
   useEffect(()=>{ fetchData() }, [])
 
@@ -26,22 +27,110 @@ export default function Dashboard(){
   function openCreate(){ setForm({id:null,title:'',description:'',price:'',imageUrl:''}); setShowForm(true) }
   function openEdit(p){ setForm({...p, imageUrl: p.image || ''}); setShowForm(true) }
 
-  async function submitForm(e){
-    e.preventDefault()
-    const fd = new FormData()
-    fd.append('title', form.title)
-    fd.append('description', form.description)
-    fd.append('price', form.price)
-    if (form.imageFile) fd.append('image', form.imageFile)
-    if (form.imageUrl) fd.append('imageUrl', form.imageUrl)
-    let url = '/api/properties'
-    let method = 'POST'
-    if (form.id) { url = `/api/properties/${form.id}`; method = 'PUT' }
-    const res = await fetch(url, { method, body: fd })
-    if (res.ok) {
-      setShowForm(false); fetchData()
-    } else {
-      const txt = await res.text(); alert(txt)
+  async function submitForm(e) {
+    e.preventDefault();
+    setUploading(true);
+    
+    try {
+      let imageUrl = form.imageUrl || '';
+      
+      // If there's a file to upload, use Vercel Blob Storage
+      if (form.imageFile) {
+        console.log('Preparing to upload file:', form.imageFile.name, form.imageFile.type, form.imageFile.size);
+        
+        const formData = new FormData();
+        // The second parameter should be the file blob/object
+        formData.append('file', form.imageFile, form.imageFile.name);
+        
+        console.log('Sending upload request to /api/upload');
+        
+        try {
+          const uploadResponse = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData,
+            // Don't set Content-Type header, let the browser set it with the correct boundary
+          });
+          
+          console.log('Upload response status:', uploadResponse.status);
+          
+          if (!uploadResponse.ok) {
+            const errorText = await uploadResponse.text();
+            console.error('Upload failed with status:', uploadResponse.status, 'Response:', errorText);
+            throw new Error(`Upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`);
+          }
+          
+          const result = await uploadResponse.json();
+          console.log('Upload successful, result:', result);
+          
+          if (!result.url) {
+            throw new Error('No URL returned from upload');
+          }
+          
+          imageUrl = result.url;
+          console.log('Image uploaded successfully, URL:', imageUrl);
+          
+        } catch (uploadError) {
+          console.error('Error during file upload:', uploadError);
+          throw new Error(`File upload failed: ${uploadError.message}`);
+        }
+      } else {
+        console.log('No file to upload, using existing image URL:', imageUrl || 'none');
+      }
+      
+      // Prepare the property data
+      const propertyData = {
+        title: form.title,
+        description: form.description,
+        price: form.price,
+        image: imageUrl,
+      }
+      
+      // Send the property data to your API
+      let url = '/api/properties'
+      let method = 'POST'
+      
+      if (form.id) {
+        url = `/api/properties/${form.id}`
+        method = 'PUT'
+      }
+      
+      const res = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(propertyData),
+      })
+      
+      if (res.ok) {
+        setShowForm(false)
+        fetchData()
+      } else {
+        const txt = await res.text()
+        alert(txt)
+      }
+    } catch (error) {
+      console.error('Error saving property:', error);
+      
+      // Log more details about the error
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error('Error response data:', error.response.data);
+        console.error('Error status:', error.response.status);
+        console.error('Error headers:', error.response.headers);
+        alert(`Error: ${error.response.data?.error || 'Failed to save property'}`);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error('No response received:', error.request);
+        alert('No response from server. Please check your connection and try again.');
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error('Error message:', error.message);
+        alert(`Error: ${error.message || 'An error occurred while saving the property'}`);
+      }
+    } finally {
+      setUploading(false);
     }
   }
 
@@ -116,15 +205,51 @@ export default function Dashboard(){
               </div>
               <div>
                 <label className="text-sm">Image URL (optional)</label>
-                <input className="mt-1 block w-full border rounded p-2" value={form.imageUrl} onChange={e=>setForm({...form, imageUrl:e.target.value})} />
+                <input 
+                  className="mt-1 block w-full border rounded p-2" 
+                  value={form.imageUrl} 
+                  onChange={e=>setForm({...form, imageUrl:e.target.value, imageFile: null})} 
+                  placeholder="https://example.com/image.jpg"
+                />
               </div>
               <div>
                 <label className="text-sm">Or upload image (optional)</label>
-                <input type="file" className="mt-1 block" onChange={e=>setForm({...form, imageFile: e.target.files[0]})} />
+                <input 
+                  type="file" 
+                  className="mt-1 block w-full" 
+                  accept="image/*"
+                  onChange={e=>{
+                    if (e.target.files && e.target.files[0]) {
+                      setForm({
+                        ...form, 
+                        imageFile: e.target.files[0],
+                        imageUrl: '' // Clear URL if file is selected
+                      })
+                    }
+                  }} 
+                />
+                {form.imageFile && (
+                  <div className="mt-2 text-sm text-gray-600">
+                    Selected: {form.imageFile.name} ({(form.imageFile.size / 1024).toFixed(1)} KB)
+                  </div>
+                )}
               </div>
-              <div className="flex items-center space-x-2">
-                <button className="bg-blue-600 text-white px-4 py-2 rounded" type="submit">Save</button>
-                <button type="button" onClick={()=>setShowForm(false)} className="px-4 py-2 rounded border">Cancel</button>
+              <div className="flex items-center space-x-2 pt-2">
+                <button 
+                  type="submit" 
+                  className={`px-4 py-2 rounded text-white ${uploading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'}`}
+                  disabled={uploading}
+                >
+                  {uploading ? 'Uploading...' : 'Save'}
+                </button>
+                <button 
+                  type="button" 
+                  onClick={()=>setShowForm(false)} 
+                  className="px-4 py-2 rounded border"
+                  disabled={uploading}
+                >
+                  Cancel
+                </button>
               </div>
             </form>
           </div>

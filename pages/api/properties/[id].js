@@ -1,46 +1,91 @@
 import nc from 'next-connect'
-import multer from 'multer'
 import path from 'path'
 import fs from 'fs'
-import { getProperties, saveProperties, uploadsDir, initStore } from '../../../lib/store'
+import { getProperties, saveProperties, initStore } from '../../../lib/store'
 
 initStore()
-const upload = multer({ dest: path.join(process.cwd(),'data','uploads') })
+
 const handler = nc()
-  .use(upload.single('image'))
-  .all((req,res)=>{
-    const props = getProperties()
-    const id = parseInt(req.query.id,10)
-    const idx = props.findIndex(p=>p.id===id)
-    if (idx === -1) return res.status(404).end('Not found')
-    // handle GET, PUT, DELETE
-    const cookies = require('cookie').parse(req.headers.cookie || '')
-    const token = cookies.token
-    let sessions = {}
-    try { sessions = JSON.parse(fs.readFileSync(path.join(process.cwd(),'data','sessions.json'),'utf-8')||'{}') } catch(e){}
-    if (req.method === 'GET') return res.status(200).json(props[idx])
-    if (req.method === 'PUT') {
-      if (!token || !sessions[token]) return res.status(401).end('Unauthorized')
-      // allow admin and demo? demo is read-only; only admin allowed
-      if (sessions[token].role !== 'admin') return res.status(403).end('Forbidden')
-      const body = req.body || {}
-      if (!body.title || !body.description || !body.price) return res.status(400).end('Title, description, and price are required')
-      props[idx].title = String(body.title).slice(0,200) || props[idx].title
-      props[idx].description = String(body.description).slice(0,2000) || props[idx].description
-      props[idx].price = String(body.price).slice(0,100) || props[idx].price
-      if (req.file) props[idx].image = '/uploads/' + req.file.filename
-      if (body.imageUrl) props[idx].image = body.imageUrl
-      saveProperties(props)
-      return res.status(200).json(props[idx])
+  .all(async (req, res) => {
+    try {
+      const props = getProperties()
+      const id = parseInt(req.query.id, 10)
+      const propertyIndex = props.findIndex(p => p.id === id)
+      
+      if (propertyIndex === -1) {
+        return res.status(404).json({ error: 'Property not found' })
+      }
+      
+      const property = props[propertyIndex]
+      
+      // Handle GET request
+      if (req.method === 'GET') {
+        return res.status(200).json(property)
+      }
+      
+      // Authentication for PUT and DELETE
+      const cookies = require('cookie').parse(req.headers.cookie || '')
+      const token = cookies.token
+      let sessions = {}
+      
+      try { 
+        sessions = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'data', 'sessions.json'), 'utf-8') || '{}') 
+      } catch (e) {}
+      
+      if (!token || !sessions[token] || sessions[token].role !== 'admin') {
+        return res.status(401).json({ error: 'Unauthorized' })
+      }
+      
+      // Handle PUT request
+      if (req.method === 'PUT') {
+        // Parse the JSON body
+        const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body
+        
+        // Validate required fields
+        if (!body.title || !body.description || !body.price) {
+          return res.status(400).json({ error: 'Title, description, and price are required' })
+        }
+        
+        // Update the property
+        const updatedProperty = {
+          ...property,
+          title: String(body.title).slice(0, 200),
+          description: String(body.description).slice(0, 2000),
+          price: String(body.price).slice(0, 100),
+          image: body.image || property.image || '',
+          updatedAt: new Date().toISOString()
+        }
+        
+        // Update the property in the array and save
+        props[propertyIndex] = updatedProperty
+        saveProperties(props)
+        
+        return res.status(200).json(updatedProperty)
+      }
+      
+      // Handle DELETE request
+      if (req.method === 'DELETE') {
+        props.splice(propertyIndex, 1)
+        saveProperties(props)
+        return res.status(200).json({ success: true })
+      }
+      
+      // Method not allowed
+      res.setHeader('Allow', ['GET', 'PUT', 'DELETE'])
+      return res.status(405).json({ error: `Method ${req.method} not allowed` })
+      
+    } catch (error) {
+      console.error('Error in property API route:', error)
+      return res.status(500).json({ error: 'Internal server error' })
     }
-    if (req.method === 'DELETE') {
-      if (!token || !sessions[token]) return res.status(401).end('Unauthorized')
-      if (sessions[token].role !== 'admin') return res.status(403).end('Forbidden')
-      props.splice(idx,1); saveProperties(props)
-      return res.status(200).end()
-    }
-    res.status(405).end()
   })
 
-export const config = { api: { bodyParser: false } }
+// Enable JSON body parsing with increased size limit
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb', // Set size limit for JSON body
+    },
+  },
+}
 export default handler
